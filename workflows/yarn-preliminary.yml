@@ -1,0 +1,42 @@
+name: Yarn Preliminary
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        type: string
+        required: true
+      format:
+        type: boolean
+      lint:
+        type: boolean
+      test:
+        type: boolean
+
+jobs:
+  preliminary-checks:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: ${{ inputs.node-version }}
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Check formatting
+        if: ${{ inputs.format }}
+        run: yarn fmt:check
+
+      - name: Lint via eslint
+        if: ${{ inputs.lint }}
+        run: yarn lint
+
+      - name: Build project
+        run: yarn build
+
+      - name: Run tests
+        if: ${{ inputs.test }}
+        run: yarn test:unit-ci
