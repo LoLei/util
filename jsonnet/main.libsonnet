@@ -15,7 +15,7 @@ local util(k) = {
         httpIngressPath.withPath('/') +
         httpIngressPath.withPathType('Prefix') +
         httpIngressPath.backend.service.withName(targetService.metadata.name) +
-        httpIngressPath.backend.service.port.withNumber(targetService.spec.ports[0].number)
+        httpIngressPath.backend.service.port.withNumber(targetService.spec.ports[0].port)
         // Port name is often too long (15 characters)
       )
     ) +
