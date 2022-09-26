@@ -42,4 +42,4 @@ jobs:
 
       - name: Run tests
         if: ${{ inputs.test }}
-        run: pytest -m pytest
+        run: python -m pytest
