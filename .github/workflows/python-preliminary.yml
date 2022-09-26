@@ -1,0 +1,45 @@
+name: Python Preliminary
+
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        type: string
+        required: true
+      format:
+        type: boolean
+        required: false
+      typecheck:
+        type: boolean
+        required: false
+      test:
+        type: boolean
+        required: false
+
+jobs:
+  preliminary-checks:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ inputs.python-version }}
+
+      - name: Install dependencies
+        run: '[ -f requirements.txt ] && pip install -r requirements.txt || echo File not found'
+
+      - name: Install dev dependencies
+        run: '[ -f requirements-dev.txt ] && pip install -r requirements-dev.txt || echo File not found'
+
+      - name: Check formatting
+        if: ${{ inputs.format }}
+        run: black --check .
+
+      - name: Typecheck
+        if: ${{ inputs.typecheck }}
+        run: mypy .
+
+      - name: Run tests
+        if: ${{ inputs.test }}
+        run: pytest -m pytest
