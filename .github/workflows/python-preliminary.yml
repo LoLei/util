@@ -15,6 +15,14 @@ on:
       test:
         type: boolean
         required: false
+      test-with-coverage:
+        type: boolean
+        required: false
+        description: 'Run tests with coverage, needs test-with-coverage-dir'
+      test-with-coverage-dir:
+        type: string
+        required: false
+        description: 'The directory in which to check coverage, if test-with-coverage is used'
 
 jobs:
   preliminary-checks:
@@ -27,10 +35,10 @@ jobs:
           python-version: ${{ inputs.python-version }}
 
       - name: Install dependencies
-        run: '[ -f requirements.txt ] && pip install -r requirements.txt || echo File not found'
+        run: "[ -f requirements.txt ] && pip install -r requirements.txt || echo File not found"
 
       - name: Install dev dependencies
-        run: '[ -f requirements-dev.txt ] && pip install -r requirements-dev.txt || echo File not found'
+        run: "[ -f requirements-dev.txt ] && pip install -r requirements-dev.txt || echo File not found"
 
       - name: Check formatting
         if: ${{ inputs.format }}
@@ -42,4 +50,8 @@ jobs:
 
       - name: Run tests
         if: ${{ inputs.test }}
-        run: python -m pytest
+        run: python -m pytest .
+
+      - name: Run tests with coverage
+        if: ${{ inputs.test-with-coverage }}
+        run: python -m pytest --cov=${{ inputs.test-with-coverage-dir }} .
